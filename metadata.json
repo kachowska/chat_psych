@@ -1,0 +1,5 @@
+{
+  "name": "ChatPsych",
+  "description": "A communication style analyzer that creates psychological profiles and behavioral insights from WhatsApp and Telegram chat exports using local processing and Gemini AI.",
+  "requestFramePermissions": []
+}
