@@ -1,5 +1,20 @@
-A communication style analyzer that creates psychological profiles and behavioral insights from WhatsApp and Telegram chat exports (html files ed messages1 messages2 tc.) using local processing and AI.
-<img width="911" height="629" alt="image" src="https://github.com/user-attachments/assets/68861c08-ecff-4b91-ad76-46f647de1ef8" />
-<img width="1410" height="728" alt="image" src="https://github.com/user-attachments/assets/8999645c-73e3-465b-9989-ebd6edb0818a" />
-<img width="910" height="622" alt="image" src="https://github.com/user-attachments/assets/a76a837f-f2e9-4f2f-9533-fabbbcd69a7a" />
-<img width="901" height="627" alt="image" src="https://github.com/user-attachments/assets/1e014b17-343a-496c-bb79-d9360c702389" />
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
+
+# Run and deploy your AI Studio app
+
+This contains everything you need to run your app locally.
+
+View your app in AI Studio: https://ai.studio/apps/drive/1hNTcjfBmFhFcAgLmELBbf0vcc_O777Uo
+
+## Run Locally
+
+**Prerequisites:**  Node.js
+
+
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`

@@ -23,17 +23,27 @@ const normalizeScore = (val: any): number => {
 
 // Helper to ensure profile has all required fields
 const sanitizeProfile = (data: any): PsychologicalProfile => {
+    // Helper to safely extract trait data whether it comes as number or object
+    const extractTrait = (source: any, defaultText: string) => {
+        const val = source?.score !== undefined ? source.score : source;
+        const text = source?.explanation || defaultText;
+        return {
+            score: normalizeScore(val),
+            explanation: text
+        };
+    };
+
     return {
         archetype: data.archetype || "Аноним",
         archetypeDescription: data.archetypeDescription || "Не удалось определить.",
         personalityTraits: Array.isArray(data.personalityTraits) ? data.personalityTraits : [],
         mbti: data.mbti || "Unknown",
         bigFive: {
-            openness: normalizeScore(data.bigFive?.openness),
-            conscientiousness: normalizeScore(data.bigFive?.conscientiousness),
-            extraversion: normalizeScore(data.bigFive?.extraversion),
-            agreeableness: normalizeScore(data.bigFive?.agreeableness),
-            neuroticism: normalizeScore(data.bigFive?.neuroticism),
+            openness: extractTrait(data.bigFive?.openness, "Уровень открытости опыту."),
+            conscientiousness: extractTrait(data.bigFive?.conscientiousness, "Уровень организованности."),
+            extraversion: extractTrait(data.bigFive?.extraversion, "Уровень общительности."),
+            agreeableness: extractTrait(data.bigFive?.agreeableness, "Уровень доброжелательности."),
+            neuroticism: extractTrait(data.bigFive?.neuroticism, "Уровень эмоциональной стабильности."),
         },
         communicationStyle: {
             tone: data.communicationStyle?.tone || "Neutral",
@@ -116,19 +126,19 @@ export const analyzeUserProfile = async (user: UserProfile, chatContext: string)
 
     Задачи:
     1. Анализ стиля речи, лексики, эмодзи, пунктуации.
-    2. Оценка MBTI и Big Five (Шкала 0-100).
-    3. Выявление скрытых мотивов.
-    4. ДЕТАЛЬНЫЙ АНАЛИЗ ТОКСИЧНОСТИ:
-       - Оценка 0-100 (где 0 - святой, 100 - максимально токсичный).
-       - Уровень (например: "Экологичный", "Душный", "Пассивно-агрессивный", "Манипулятор").
-       - Конкретные признаки (traits).
-       - СПЕЦИФИЧЕСКИЕ ФОРМЫ С ПРИМЕРАМИ: Найди в тексте проявления пассивной агрессии, сарказма, манипуляций, газлайтинга или обесценивания. 
-         Для каждой найденной формы приведи ЦИТАТУ из сообщений. Если пользователь не токсичен, приведи примеры поддержки или заботы.
-       - Объяснение почему дана такая оценка.
-    5. Создание системного промта для клонирования личности.
+    2. Оценка MBTI.
+    3. Оценка Big Five (Большая Пятерка):
+       - Для каждой черты (Открытость, Добросовестность, Экстраверсия, Доброжелательность, Невротизм) дай:
+       - score: число 0-100.
+       - explanation: Краткое пояснение (1 предложение), что этот уровень значит для этого человека (например: "Высокая экстраверсия указывает на потребность во внимании...").
+    4. Выявление скрытых мотивов.
+    5. ДЕТАЛЬНЫЙ АНАЛИЗ ТОКСИЧНОСТИ:
+       - Оценка 0-100.
+       - Уровень и признаки.
+       - Цитаты (specificForms) для пассивной агрессии, сарказма и т.д.
+    6. Создание системного промта.
 
     ВАЖНО: ОТВЕТ СТРОГО В JSON НА РУССКОМ ЯЗЫКЕ.
-    Big Five, Emotional Profile и Toxicity оценивай числами от 0 до 100 (целые числа).
   `;
 
   try {
@@ -151,11 +161,26 @@ export const analyzeUserProfile = async (user: UserProfile, chatContext: string)
             bigFive: {
               type: Type.OBJECT,
               properties: {
-                openness: { type: Type.NUMBER, description: "0-100" },
-                conscientiousness: { type: Type.NUMBER, description: "0-100" },
-                extraversion: { type: Type.NUMBER, description: "0-100" },
-                agreeableness: { type: Type.NUMBER, description: "0-100" },
-                neuroticism: { type: Type.NUMBER, description: "0-100" }
+                openness: { 
+                    type: Type.OBJECT, 
+                    properties: { score: { type: Type.NUMBER }, explanation: { type: Type.STRING } } 
+                },
+                conscientiousness: { 
+                    type: Type.OBJECT, 
+                    properties: { score: { type: Type.NUMBER }, explanation: { type: Type.STRING } } 
+                },
+                extraversion: { 
+                    type: Type.OBJECT, 
+                    properties: { score: { type: Type.NUMBER }, explanation: { type: Type.STRING } } 
+                },
+                agreeableness: { 
+                    type: Type.OBJECT, 
+                    properties: { score: { type: Type.NUMBER }, explanation: { type: Type.STRING } } 
+                },
+                neuroticism: { 
+                    type: Type.OBJECT, 
+                    properties: { score: { type: Type.NUMBER }, explanation: { type: Type.STRING } } 
+                }
               }
             },
             communicationStyle: {
@@ -231,12 +256,22 @@ export const analyzeCompatibility = async (
       А: ${userA.name} (${profileA.archetype}, ${profileA.mbti})
       Черты: ${profileA.personalityTraits.join(', ')}
       Стиль: ${JSON.stringify(profileA.communicationStyle)}
-      Big5: ${JSON.stringify(profileA.bigFive)}
+      Big5 Scores: 
+      Openness: ${profileA.bigFive.openness.score}
+      Conscientiousness: ${profileA.bigFive.conscientiousness.score}
+      Extraversion: ${profileA.bigFive.extraversion.score}
+      Agreeableness: ${profileA.bigFive.agreeableness.score}
+      Neuroticism: ${profileA.bigFive.neuroticism.score}
 
       Б: ${userB.name} (${profileB.archetype}, ${profileB.mbti})
       Черты: ${profileB.personalityTraits.join(', ')}
       Стиль: ${JSON.stringify(profileB.communicationStyle)}
-      Big5: ${JSON.stringify(profileB.bigFive)}
+      Big5 Scores: 
+      Openness: ${profileB.bigFive.openness.score}
+      Conscientiousness: ${profileB.bigFive.conscientiousness.score}
+      Extraversion: ${profileB.bigFive.extraversion.score}
+      Agreeableness: ${profileB.bigFive.agreeableness.score}
+      Neuroticism: ${profileB.bigFive.neuroticism.score}
 
       Задача: Оценить совместимость (0-100%), синергию и конфликты.
       ОТВЕТ В JSON НА РУССКОМ.

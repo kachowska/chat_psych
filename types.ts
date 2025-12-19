@@ -28,12 +28,17 @@ export interface AnalysisData {
   chatName: string;
 }
 
+export interface BigFiveTrait {
+    score: number;
+    explanation: string;
+}
+
 export interface BigFive {
-    openness: number;
-    conscientiousness: number;
-    extraversion: number;
-    agreeableness: number;
-    neuroticism: number;
+    openness: BigFiveTrait;
+    conscientiousness: BigFiveTrait;
+    extraversion: BigFiveTrait;
+    agreeableness: BigFiveTrait;
+    neuroticism: BigFiveTrait;
 }
 
 export interface ToxicityAnalysis {

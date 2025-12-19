@@ -71,11 +71,19 @@ const AiAnalysis: React.FC<AiAnalysisProps> = ({ user, chatContext }) => {
   }
 
   const bigFiveData = [
-    { subject: 'Open', A: profile.bigFive.openness, fullMark: 100 },
-    { subject: 'Cons', A: profile.bigFive.conscientiousness, fullMark: 100 },
-    { subject: 'Extra', A: profile.bigFive.extraversion, fullMark: 100 },
-    { subject: 'Agree', A: profile.bigFive.agreeableness, fullMark: 100 },
-    { subject: 'Neuro', A: profile.bigFive.neuroticism, fullMark: 100 },
+    { subject: 'Open', A: profile.bigFive.openness.score, fullMark: 100 },
+    { subject: 'Cons', A: profile.bigFive.conscientiousness.score, fullMark: 100 },
+    { subject: 'Extra', A: profile.bigFive.extraversion.score, fullMark: 100 },
+    { subject: 'Agree', A: profile.bigFive.agreeableness.score, fullMark: 100 },
+    { subject: 'Neuro', A: profile.bigFive.neuroticism.score, fullMark: 100 },
+  ];
+
+  const bigFiveList = [
+      { label: 'Открытость', ...profile.bigFive.openness },
+      { label: 'Добросовестность', ...profile.bigFive.conscientiousness },
+      { label: 'Экстраверсия', ...profile.bigFive.extraversion },
+      { label: 'Доброжелательность', ...profile.bigFive.agreeableness },
+      { label: 'Невротизм', ...profile.bigFive.neuroticism },
   ];
 
   // Helper for toxicity color
@@ -121,28 +129,48 @@ const AiAnalysis: React.FC<AiAnalysisProps> = ({ user, chatContext }) => {
                 </div>
             </div>
 
-            {/* Radar */}
-            <div className="h-64 w-full p-6 border-b border-white/10 relative">
-                <p className="absolute top-6 left-6 text-[9px] uppercase tracking-widest text-neutral-600">Big Five</p>
-                <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart cx="50%" cy="55%" outerRadius="70%" data={bigFiveData}>
-                        <PolarGrid stroke="#262626" />
-                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#525252', fontSize: 9 }} />
-                        <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                        <Radar
-                            name={user.name}
-                            dataKey="A"
-                            stroke="#fff"
-                            strokeWidth={1}
-                            fill="#fff"
-                            fillOpacity={0.1}
-                        />
-                        <RechartsTooltip 
-                             contentStyle={{ backgroundColor: '#000', borderColor: '#333', fontSize: '10px' }}
-                             itemStyle={{ color: '#fff' }}
-                        />
-                    </RadarChart>
-                </ResponsiveContainer>
+            {/* Radar & Big Five Breakdown */}
+            <div className="border-b border-white/10">
+                <div className="h-64 w-full p-6 relative">
+                    <p className="absolute top-6 left-6 text-[9px] uppercase tracking-widest text-neutral-600">Big Five</p>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <RadarChart cx="50%" cy="55%" outerRadius="70%" data={bigFiveData}>
+                            <PolarGrid stroke="#262626" />
+                            <PolarAngleAxis dataKey="subject" tick={{ fill: '#525252', fontSize: 9 }} />
+                            <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                            <Radar
+                                name={user.name}
+                                dataKey="A"
+                                stroke="#fff"
+                                strokeWidth={1}
+                                fill="#fff"
+                                fillOpacity={0.1}
+                            />
+                            <RechartsTooltip 
+                                contentStyle={{ backgroundColor: '#000', borderColor: '#333', fontSize: '10px' }}
+                                itemStyle={{ color: '#fff' }}
+                            />
+                        </RadarChart>
+                    </ResponsiveContainer>
+                </div>
+                
+                {/* Text Explanations */}
+                <div className="px-8 pb-8 space-y-4">
+                    {bigFiveList.map((trait, idx) => (
+                        <div key={idx} className="group">
+                             <div className="flex items-end justify-between mb-1">
+                                <span className="text-[10px] text-neutral-500 uppercase tracking-widest">{trait.label}</span>
+                                <span className="text-[10px] text-white font-mono">{trait.score}</span>
+                             </div>
+                             <div className="h-px w-full bg-neutral-900 mb-2">
+                                <div className="h-full bg-white/30" style={{ width: `${trait.score}%` }}></div>
+                             </div>
+                             <p className="text-[10px] text-neutral-500 leading-relaxed font-light opacity-80 group-hover:opacity-100 transition-opacity">
+                                 {trait.explanation}
+                             </p>
+                        </div>
+                    ))}
+                </div>
             </div>
 
             {/* Toxicity Analysis Block */}

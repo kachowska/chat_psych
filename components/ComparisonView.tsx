@@ -57,11 +57,11 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ data, onBack }) => {
 
   // Prepare Chart Data
   const chartData = result ? [
-    { subject: 'Открытость', A: result.p1.bigFive.openness, B: result.p2.bigFive.openness, fullMark: 100 },
-    { subject: 'Добросовестность', A: result.p1.bigFive.conscientiousness, B: result.p2.bigFive.conscientiousness, fullMark: 100 },
-    { subject: 'Экстраверсия', A: result.p1.bigFive.extraversion, B: result.p2.bigFive.extraversion, fullMark: 100 },
-    { subject: 'Доброжелательность', A: result.p1.bigFive.agreeableness, B: result.p2.bigFive.agreeableness, fullMark: 100 },
-    { subject: 'Невротизм', A: result.p1.bigFive.neuroticism, B: result.p2.bigFive.neuroticism, fullMark: 100 },
+    { subject: 'Открытость', A: result.p1.bigFive.openness.score, B: result.p2.bigFive.openness.score, fullMark: 100 },
+    { subject: 'Добросовестность', A: result.p1.bigFive.conscientiousness.score, B: result.p2.bigFive.conscientiousness.score, fullMark: 100 },
+    { subject: 'Экстраверсия', A: result.p1.bigFive.extraversion.score, B: result.p2.bigFive.extraversion.score, fullMark: 100 },
+    { subject: 'Доброжелательность', A: result.p1.bigFive.agreeableness.score, B: result.p2.bigFive.agreeableness.score, fullMark: 100 },
+    { subject: 'Невротизм', A: result.p1.bigFive.neuroticism.score, B: result.p2.bigFive.neuroticism.score, fullMark: 100 },
   ] : [];
 
   return (
