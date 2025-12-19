@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import FileUpload from './components/FileUpload';
 import Dashboard from './components/Dashboard';
+import MusicPlayer from './components/MusicPlayer';
 import { AnalysisData } from './types';
 import { parseChatFiles } from './services/parser';
 
@@ -32,7 +33,11 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen font-sans bg-[#050505] text-neutral-200 selection:bg-white/20 selection:text-white">
+    <div className="min-h-screen font-sans bg-[#050505] text-neutral-200 selection:bg-white/20 selection:text-white relative">
+      
+      {/* Global Music Player */}
+      <MusicPlayer />
+
       {!analysisData ? (
         <div className="min-h-screen flex flex-col items-center justify-center">
             
